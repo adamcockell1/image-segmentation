@@ -1,2 +1,2 @@
 # image-segmentation
-CISC 352 - Topic in Artificial Intelligence Final Project
+CISC 352 - Neural and Genetic Computing Final Project
