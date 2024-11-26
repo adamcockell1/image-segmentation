@@ -19,7 +19,6 @@ jobs:
       - name: Get dataset
         shell: python
         run: |
-          pip3 install opendatasets
           import opendatasets as od
           url = 'https://www.kaggle.com/datasets/yjh4374/sisvse-dataset/data'
           od.download(url, './images/real')
