@@ -2,8 +2,14 @@ name: Get Kaggle Dataset
 
 on: workflow_dispatch
 
+env:
+  KAGGLE_USERNAME: 'aknc18'
+  KAGGLE_KEY: 'fddd9f98b283f63d22eeee161205df17'
+
 jobs:
   fetch:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest
@@ -14,19 +20,24 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v4
         with:
+          python-version: '3.12.6'
           cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Get dataset
         shell: python
         run: |
-          pip install opendatasets
-          import opendatasets as od
-          url = 'https://www.kaggle.com/datasets/yjh4374/sisvse-dataset/data'
-          od.download(url, './images/real')
+          import kaggle
+          api = kaggle.api
+          path = 'yjh4374/sisvse-dataset'
+          api.authenticate
+          api.dataset_download_files(path, './dataset')
 
       - name: Push dataset
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git commit -am 'Push dataset'
+          git add -A && git commit -am 'Push dataset'
           git push
