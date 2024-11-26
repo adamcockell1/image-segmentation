@@ -14,6 +14,7 @@ jobs:
       - name: Install Python
         uses: actions/setup-python@v4
         with:
+          python-version: '3.13'
           cache: 'pip'
 
       - name: Install dependencies
@@ -22,9 +23,11 @@ jobs:
       - name: Get dataset
         shell: python
         run: |
-          import opendatasets as od
-          url = 'https://www.kaggle.com/datasets/yjh4374/sisvse-dataset/data'
-          od.download(url, './images/real')
+          import kaggle
+          api = kaggle.api
+          path = 'yjh4374/sisvse-dataset/data/images/real'
+          api.authenticate
+          api.dataset_download_files(path, './dataset', force=True)
 
       - name: Push dataset
         run: |
