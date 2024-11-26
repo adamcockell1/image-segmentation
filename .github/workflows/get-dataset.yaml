@@ -29,9 +29,9 @@ jobs:
         run: |
           import kaggle
           api = kaggle.api
-          path = 'yjh4374/sisvse-dataset/data/images'
+          path = 'yjh4374/sisvse-dataset'
           api.authenticate
-          api.dataset_download_files(path, './dataset', force=True)
+          api.dataset_download_files(path, './dataset')
 
       - name: Push dataset
         run: |
