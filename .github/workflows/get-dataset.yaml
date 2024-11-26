@@ -2,6 +2,10 @@ name: Get Kaggle Dataset
 
 on: workflow_dispatch
 
+env:
+  KAGGLE_USERNAME: 'aknc18'
+  KAGGLE_KEY: 'fddd9f98b283f63d22eeee161205df17'
+
 jobs:
   fetch:
     runs-on: ubuntu-latest
@@ -25,7 +29,7 @@ jobs:
         run: |
           import kaggle
           api = kaggle.api
-          path = 'yjh4374/sisvse-dataset/data/images/real'
+          path = 'yjh4374/sisvse-dataset/data/images'
           api.authenticate
           api.dataset_download_files(path, './dataset', force=True)
 
