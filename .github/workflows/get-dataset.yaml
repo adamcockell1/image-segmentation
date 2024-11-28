@@ -3,8 +3,8 @@ name: Get Kaggle Dataset
 on: workflow_dispatch
 
 env:
-  KAGGLE_USERNAME: 'aknc18'
-  KAGGLE_KEY: 'fddd9f98b283f63d22eeee161205df17'
+  KAGGLE_USERNAME: ${{ secrets.KAGGLE_KEY }}
+  KAGGLE_KEY: ${{ secrets.KAGGLE_USERNAME }}
 
 jobs:
   fetch:
@@ -24,7 +24,7 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r ./docs/requirements.txt
 
       - name: Get dataset
         shell: python
@@ -33,7 +33,7 @@ jobs:
           api = kaggle.api
           path = 'yjh4374/sisvse-dataset'
           api.authenticate
-          api.dataset_download_files(path, './dataset')
+          api.dataset_download_files(path, './src')
 
       - name: Push dataset
         run: |
