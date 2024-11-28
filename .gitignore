@@ -2,7 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
-miccai2022_sisvse_dataset.zip
+
+# Zipped datasets
+*.zip
 
 # C extensions
 *.so
