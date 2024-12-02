@@ -1,57 +1,75 @@
-import tensorflow as tf
-from keras import layers, Model
+import model
+import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 from pathlib import Path
 
 
-def convolutional_block(input, num_filters):
+def load_data(img_dir, mask_dir, target_size):
     '''
-    This function handles data convolution for the U-Net model.
-
-    Parameters:
-        input: Tensor output from the previous layer.
-        num_filters: Number of filters or 'width' for the layer.
-
-    Returns:
-        Processed input data.
     '''
-    output = input
-    return output
+    images = []
+    masks = []
+    for img_name in img_dir.glob:
+        # Load and preprocess image
+        img_path = Path(img_dir, img_name)
+        mask_path = Path(mask_dir, img_name.stem, '_mask.jpg')
+        image = cv2.imread(img_path)
+        mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)  # Load mask as grayscale
+        image = cv2.resize(image, target_size)
+        mask = cv2.resize(mask, target_size)
+
+        # Normalize images and masks
+        images.append(image / 255.0)
+        masks.append(mask / 255.0)
+
+    return np.array(images), np.array(masks).reshape(-1, target_size[0], target_size[1], 1)
 
 
-def encoder_block(input, num_filters):
+def visualize_predictions(images, masks, predictions):
     '''
-    This function handles data downsampling for the U-Net model.
-
-    Parameters:
-        input: Tensor output from the previous encoder layer.
-        num_filters: Number of filters or 'width' for the layer.
-
-    Returns:
-        tuple:
-            - Processed input data from the convolutional block.
-            - Output data after pooling (downsampling).
     '''
-    output = convolutional_block(input, num_filters)
-    pooled = output
-    return output, pooled
+    for i in range(len(images)):
+        img = (images[i] * 255).astype(np.uint8)
+        true_mask = (masks[i] * 255).astype(np.uint8).squeeze()
+        pred_mask = (predictions[i] > 0.5).astype(np.uint8).squeeze() * 255
 
+        plt.figure(figsize=(12, 4))
+        plt.subplot(1, 3, 1)
+        plt.title('Original Image')
+        plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
-def decoder_block(input, skip_connection, num_filters):
-    '''
-    This function handles data upsampling for the U-Net model.
+        plt.subplot(1, 3, 2)
+        plt.title('True Mask')
+        plt.imshow(true_mask, cmap='gray')
 
-    Parameters:
-        input: Tensor output from the previous decoder layer.
-        skip_connection: Tensor output from the corresponding encoder layer.
-        num_filters: Number of filters or 'width' for the layer.
+        plt.subplot(1, 3, 3)
+        plt.title('Predicted Mask')
+        plt.imshow(pred_mask, cmap='gray')
 
-    Returns:
-        Processed input data from the convolutional block.
-    '''
-    output = convolutional_block(input, num_filters)
-    return output
+        plt.show()
 
 
 if __name__ == '__main__':
-    pass
+    IMG_DIR = Path(Path.cwd().parents[1], 'data', 'trainingImages')
+    MASK_DIR = Path(Path.cwd().parents[1], 'data', 'trainingMasks')
+    IMG_SIZE = (128, 128)
+    BATCH_SIZE = 16
+    EPOCHS = 20
+
+    # Load and split data
+    images, masks = load_data(IMG_DIR, MASK_DIR, IMG_SIZE)
+    train_images, val_images, train_masks, val_masks = train_test_split(
+        images, masks, 0.2, random_state=42)
+
+    # Build and train the model
+    unet = model.build_model
+    history = unet.fit(train_images, train_masks,
+                       validation_data=(val_images, val_masks),
+                       batch_size=BATCH_SIZE,
+                       epochs=EPOCHS)
+
+    # Predict and visualize results
+    predictions = model.predict(val_images)
+    visualize_predictions(val_images, val_masks, predictions)

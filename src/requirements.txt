@@ -1,3 +1,5 @@
 kaggle
 tensorflow
 numpy
+matplotlib
+opencv-python
