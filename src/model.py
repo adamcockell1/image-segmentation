@@ -85,8 +85,7 @@ def build_model():
 
     # Compile the model
     model = Model(inputs, outputs)
-    model.compile(optimizer=optimizers.Adam,
-                  loss=losses.BinaryCrossentropy,
+    model.compile(optimizer=optimizers.Adam(), loss=losses.BinaryCrossentropy(),
                   metrics=['accuracy', metrics.MeanIoU(num_classes=2)])
 
     return model

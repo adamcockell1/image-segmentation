@@ -1,9 +1,9 @@
-import model
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from pathlib import Path
+from model import *
 
 
 def load_data(img_dir, mask_dir, target_size):
@@ -11,10 +11,10 @@ def load_data(img_dir, mask_dir, target_size):
     '''
     images = []
     masks = []
-    for img_name in img_dir.glob('*.jpg'):
+    for img_name in Path(img_dir).glob('*.jpg'):
         # Load and preprocess image
         img_path = Path(img_dir, img_name)
-        mask_path = Path(mask_dir, img_name.stem, '_mask.jpg')
+        mask_path = Path(mask_dir, f'{img_name.stem}_mask.jpg')
         image = cv2.imread(img_path)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)  # Load mask as grayscale
         image = cv2.resize(image, target_size)
@@ -52,8 +52,8 @@ def visualize_predictions(images, masks, predictions):
 
 
 if __name__ == '__main__':
-    IMG_DIR = Path(Path.cwd().parents[1], 'data', 'trainingImages')
-    MASK_DIR = Path(Path.cwd().parents[1], 'data', 'trainingMasks')
+    IMG_DIR = Path(Path(__file__).parents[1], 'data', 'trainingImages')
+    MASK_DIR = Path(Path(__file__).parents[1], 'data', 'trainingMasks')
     IMG_SIZE = (128, 128)
     BATCH_SIZE = 16
     EPOCHS = 20
@@ -61,15 +61,15 @@ if __name__ == '__main__':
     # Load and split data
     images, masks = load_data(IMG_DIR, MASK_DIR, IMG_SIZE)
     train_images, val_images, train_masks, val_masks = train_test_split(
-        images, masks, 0.2, random_state=42)
+        images, masks, test_size=0.2, random_state=42)
 
     # Build and train the model
-    unet = model.build_model
+    unet = build_model()
     history = unet.fit(train_images, train_masks,
                        validation_data=(val_images, val_masks),
                        batch_size=BATCH_SIZE,
                        epochs=EPOCHS)
 
     # Predict and visualize results
-    predictions = model.predict(val_images)
+    predictions = unet.predict(val_images)
     visualize_predictions(val_images, val_masks, predictions)
