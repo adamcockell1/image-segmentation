@@ -33,7 +33,7 @@ def encoder_block(input, num_filters):
             - Output data after pooling (downsampling).
     '''
     output = convolutional_block(input, num_filters)
-    pooled = layers.MaxPooling2D(2)(output)
+    pooled = layers.Dropout(0.3)(layers.MaxPooling2D(2)(output))
     return output, pooled
 
 
@@ -50,8 +50,8 @@ def decoder_block(input, skip_connection, num_filters):
         Processed input data from the convolutional block.
     '''
     output = layers.Conv2DTranspose(num_filters, 3, 2, padding='same')(input)
-    output = layers.Concatenate([input, skip_connection])
-    output = convolutional_block(input, num_filters)
+    output = layers.Dropout(0.3)(layers.Concatenate()([output, skip_connection]))
+    output = convolutional_block(output, num_filters)
     return output
 
 
@@ -81,11 +81,11 @@ def build_model():
     decode1 = decoder_block(decode2, encode1, 64)
 
     # Final output processing step
-    outputs = layers.Conv2D(3, 1, padding='same', activation='softmax')(decode1)
+    outputs = layers.Conv2D(1, 1, padding='same', activation='softmax')(decode1)
 
     # Compile the model
     model = Model(inputs, outputs)
     model.compile(optimizer=optimizers.Adam(), loss=losses.BinaryCrossentropy(),
-                  metrics=['accuracy', metrics.MeanIoU(num_classes=2)])
+                  metrics=['accuracy', metrics.MeanIoU(2)])
 
     return model
