@@ -11,7 +11,7 @@ def load_data(img_dir, mask_dir, target_size):
     '''
     images = []
     masks = []
-    for img_name in img_dir.glob:
+    for img_name in img_dir.glob('*.jpg'):
         # Load and preprocess image
         img_path = Path(img_dir, img_name)
         mask_path = Path(mask_dir, img_name.stem, '_mask.jpg')
