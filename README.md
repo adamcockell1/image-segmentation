@@ -18,4 +18,4 @@ This project uses the [Surgical Scene Segmentation in Robotic Gastrectomy](https
 
 ## Proposal and Video
 
-The [project proposal](docs/proposal.pdf) and [video demo](placeholder) can be found in the docs folder.
+The project [proposal](docs/proposal.pdf), [presentation](docs/presentation.pdf), and [report](docs/placeholder.pdf) can be found in the docs folder.
