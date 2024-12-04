@@ -1,4 +1,4 @@
-from keras import layers, optimizers, losses, metrics, Model
+from keras import layers, optimizers, regularizers, losses, metrics, Model
 
 
 def convolutional_block(input, num_filters):
@@ -13,9 +13,11 @@ def convolutional_block(input, num_filters):
         Processed input data.
     '''
     output = layers.Conv2D(num_filters, 3, padding='same', activation='relu',
-                           kernel_initializer='he_normal')(input)
+                           kernel_initializer='he_normal',
+                           kernel_regularizer=regularizers.l2(0.01))(input)
     output = layers.Conv2D(num_filters, 3, padding='same', activation='relu',
-                           kernel_initializer='he_normal')(output)
+                           kernel_initializer='he_normal',
+                           kernel_regularizer=regularizers.l2(0.01))(output)
     return output
 
 
@@ -81,11 +83,11 @@ def build_model():
     decode1 = decoder_block(decode2, encode1, 64)
 
     # Final output processing step
-    outputs = layers.Conv2D(1, 1, padding='same', activation='softmax')(decode1)
+    outputs = layers.Conv2D(1, 1, padding='same', activation='sigmoid')(decode1)
 
     # Compile the model
     model = Model(inputs, outputs)
     model.compile(optimizer=optimizers.Adam(), loss=losses.BinaryCrossentropy(),
-                  metrics=['accuracy', metrics.MeanIoU(2)])
+                  metrics=['accuracy', metrics.MeanIoU(num_classes=2)])
 
     return model
