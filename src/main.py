@@ -8,27 +8,42 @@ from model import *
 
 def load_data(img_dir, mask_dir, target_size):
     '''
+    Loads and prepares images for processing by the model
+
+    Parameters:
+        img_dir: File system path to image directory
+        mask_dir: File system path to image mask directory
+        target_size: Target resolution for the image (L, W)
+
+    Returns:
+        Array of preprocessed images and masks
     '''
     images = []
     masks = []
-    for img_name in Path(img_dir).glob('*.jpg'):
-        # Load and preprocess image
+
+    for img_name in Path(img_dir).rglob('*.jpg'):
         img_path = Path(img_dir, img_name)
         mask_path = Path(mask_dir, f'{img_name.stem}_mask.jpg')
         image = cv2.imread(img_path)
         mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)  # Load mask as grayscale
-        image = cv2.resize(image, target_size)
-        mask = cv2.resize(mask, target_size)
+        image_r = cv2.resize(image, target_size)
+        mask_r = cv2.resize(mask, target_size)
 
         # Normalize images and masks
-        images.append(image / 255.0)
-        masks.append(mask / 255.0)
+        images.append(image_r.astype(np.float32) / 255.0)
+        masks.append(mask_r.astype(np.float32) / 255.0)
 
     return np.array(images), np.array(masks).reshape(-1, target_size[0], target_size[1], 1)
 
 
 def visualize_predictions(images, masks, predictions):
     '''
+    Visualizes images and corresponding true vs predicted masks
+
+    Parameters:
+        images: Array of original images
+        masks: Array of true masks
+        predictions: Array of predicted masks
     '''
     for i in range(len(images)):
         img = (images[i] * 255).astype(np.uint8)
@@ -52,8 +67,8 @@ def visualize_predictions(images, masks, predictions):
 
 
 if __name__ == '__main__':
-    IMG_DIR = Path(Path(__file__).parents[1], 'data', 'trainingImages')
-    MASK_DIR = Path(Path(__file__).parents[1], 'data', 'trainingMasks')
+    IMG_DIR = Path(Path(__file__).resolve().parents[1], 'data', 'trainingImages')
+    MASK_DIR = Path(Path(__file__).resolve().parents[1], 'data', 'trainingMasks')
     IMG_SIZE = (128, 128)
     BATCH_SIZE = 16
     EPOCHS = 20

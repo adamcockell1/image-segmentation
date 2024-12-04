@@ -1,0 +1,24 @@
+name: Run U-Net Model Demo
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.HEAD_REF || github.REF_NAME }}
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.6'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r ./src/requirements.txt
+
+      - name: Run main
+        run: py ./src/main.py
