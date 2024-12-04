@@ -12,6 +12,16 @@ Dependencies can be installed by running this command from the src folder of the
 pip install -r requirements.txt
 ```
 
+## Running
+
+The model can be built by running this command from the src folder of the project:
+
+```
+python3 main.py
+```
+
+Alternatively, the epoch info can be viewed directly on GitHub without running locally in the 'Actions' tab under the `run_model.yml` workflow.
+
 ## Dataset
 
 This project uses the [Surgical Scene Segmentation in Robotic Gastrectomy](https://www.kaggle.com/datasets/yjh4374/sisvse-dataset/data) Kaggle dataset.

@@ -21,4 +21,4 @@ jobs:
         run: pip install -r ./src/requirements.txt
 
       - name: Run main
-        run: py ./src/main.py
+        run: python3 ./src/main.py
