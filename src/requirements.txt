@@ -1,5 +1,6 @@
 kaggle
 tensorflow
+scikit-learn
 numpy
 matplotlib
 opencv-python

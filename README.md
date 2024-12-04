@@ -20,7 +20,7 @@ The model can be built by running this command from the src folder of the projec
 python3 main.py
 ```
 
-Alternatively, the epoch info can be viewed directly on GitHub without running locally in the 'Actions' tab under the `run_model.yml` workflow.
+Alternatively, the epoch info can be viewed directly on GitHub without running locally in the [Actions](https://github.com/adamcockell1/image-segmentation/actions) tab under the `run_model.yml` workflow.
 
 ## Dataset
 
