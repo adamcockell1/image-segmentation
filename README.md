@@ -26,12 +26,12 @@ Alternatively, the epoch info can be viewed directly on GitHub without running l
 
 Predicted mask visually matches reasonably well with true mask.
 
-Tracked metrics from console (epoch 20) are:
-- Accuracy 87.54%
-- Loss 30.44
+Tracked metrics from 20 epochs are:
+- Accuracy 88.67%
+- Loss 27.82
 - Mean IoU 0.42
 
-Accuracy (especially mean IoU) would likely improve significantly with additional images, as the current sample of 20 is relatively small.
+Overall accuracy and especially mean IoU would likely improve with additional images and iterations, as the current sample of 20 is relatively small.
 
 ## Dataset
 
@@ -39,4 +39,4 @@ This project uses the [Surgical Scene Segmentation in Robotic Gastrectomy](https
 
 ## Proposal and Video
 
-The project [proposal](docs/proposal.pdf), [presentation](docs/presentation.pdf), and [report](docs/placeholder.pdf) can be found in the docs folder.
+The project [proposal](docs/proposal.pdf), [presentation](docs/presentation.pdf), and [report](docs/report.pdf) can be found in the docs folder.
